@@ -113,7 +113,7 @@ const ProjectDalHomepage = () => {
   {/* Background Image */}
   <div className="absolute inset-0 overflow-hidden">
     <img
-      src="../public/HeroPic.png"
+      src="/HeroPic.png"
       alt="Robots dancing Image"
       className="w-full h-full object-cover blur-xs opacity-70"
     />
