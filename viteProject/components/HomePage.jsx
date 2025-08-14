@@ -21,7 +21,7 @@ const ProjectDalHomepage = () => {
 
   return (
     <div className="min-h-screen overflow-hidden relative">
-      {/* Background Video */}
+      {/* Background `Video` */}
       <div className="absolute inset-0 overflow-hidden">
         <video
           className="absolute inset-0 w-full h-full object-cover filter blur-[6px]"
@@ -32,8 +32,8 @@ const ProjectDalHomepage = () => {
           preload="none"
           poster="fallback.jpg"
         >
-          <source src="/ProjectDalBgVideo.webm" type="video/webm" />
-          <source src="/ProjectDalBgVideo.mp4" type="video/mp4" />
+          <source src="/ProjectDalBgVideoCompressed.webm" type="video/webm" />
+          <source src="/ProjectDalBgVideoCompressed.mp4" type="video/mp4" />
         </video>
         {/* Vignette Overlays */}
         <div className="absolute inset-0 bg-black/40 pointer-events-none" />
