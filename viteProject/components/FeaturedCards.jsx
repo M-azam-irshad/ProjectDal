@@ -1,23 +1,33 @@
 import React from "react";
 import { Star } from "lucide-react";
 
+
 function FeaturedCards({ cardList }) {
   return (
     <main className="px-6 py-10">
       {/* Section Title */}
-      <h2
-        className="text-2xl md:text-3xl font-bold tracking-tight mb-8"
-        style={{ fontFamily: "Segoe UI, sans-serif" }}
-      >
-        Featured Projects
-      </h2>
 
+<h2
+  className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent mb-12 text-center"
+  style={{ 
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+    letterSpacing: "-0.025em"
+  }}
+>
+  Featured Projects
+</h2>
       {/* Card Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {cardList.map((card, index) => (
           <div
             key={index}
-            className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl shadow-[8px_8px_16px_rgba(0,0,0,0.15),-8px_-8px_16px_rgba(255,255,255,0.8)] hover:shadow-[12px_12px_20px_rgba(0,0,0,0.2),-12px_-12px_20px_rgba(255,255,255,0.9)] transition-all duration-300 border border-gray-200 overflow-hidden group cursor-pointer hover:scale-102"
+            className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl
+
+             shadow-[8px_8px_rgba(41,97,255),-8px_-8px_rgba(67,27,227)] 
+
+             hover:shadow-[12px_12px_rgba(0,0,0,0.2),-12px_-12px_rgba(255,255,255,0.9)] 
+             
+             transition-all duration-300 border border-gray-200 overflow-hidden group cursor-pointer hover:scale-102"
           >
             {/* Image */}
             <div
