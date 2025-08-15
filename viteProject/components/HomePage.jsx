@@ -1,3 +1,16 @@
+<style>
+  {`
+  @keyframes neonBorder {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+`}
+</style>;
+
 import React, { useState, useEffect } from "react";
 import {
   ChevronDown,
@@ -44,7 +57,7 @@ const ProjectDalHomepage = () => {
       <nav className="relative z-50 px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-500 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-700 rounded-xl flex items-center justify-center rotate-3 shadow-lg">
                 <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
@@ -61,12 +74,12 @@ const ProjectDalHomepage = () => {
           </div>
 
           {/* Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="sm:text-xl md:flex items-center space-x-8 text-xl ">
             {["Home", "Projects", "About"].map((item) => (
               <a
                 key={item}
                 href="#"
-                className="relative text-white hover:text-purple-900 font-medium group"
+                className="relative text-white hover:text-purple-900 font-medium group transition-transform duration-300 ease-in-out hover:scale-[1.2]"
               >
                 {item}
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-black/50 to-purple-500 group-hover:w-full transition-all duration-300"></div>
@@ -76,10 +89,10 @@ const ProjectDalHomepage = () => {
 
           {/* Buttons */}
           <div className="flex items-center space-x-4">
-            <button className="px-4 py-2 text-white font-medium hover:scale-110 transition-transform">
+            <button className="px-4 py-2 text-white font-medium hover:scale-110 transition-transform cursor-pointer">
               Sign In
             </button>
-            <button className="px-6 py-2 bg-gradient-to-r from-blue-400 to-purple-900 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium">
+            <button className="px-6 py-2 bg-gradient-to-r from-blue-400 to-purple-900 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium cursor-pointer">
               Get Started
             </button>
           </div>
@@ -99,18 +112,17 @@ const ProjectDalHomepage = () => {
           </div>
 
           {/* Heading */}
-          <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
+          <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg font-" style={{fontFamily:"Segoe UI, sans-serif"}}>
             Where Engineers
-            <span className="block bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-pulse">
+            <span className="block bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-pulse" style={{fontFamily:"Segoe UI, sans-serif"}}>
               Share & Inspire
             </span>
           </h1>
 
           {/* Description */}
           <p className="text-xl text-gray-100 max-w-xl mx-auto drop-shadow-md">
-            Showcase your projects with interactive 3D previews,
-            comprehensive documentation, and connect with a thriving
-            community of innovators.
+            Showcase your projects with interactive 3D previews, comprehensive
+            documentation, and connect with a thriving community of innovators.
           </p>
 
           {/* Buttons */}
@@ -119,7 +131,7 @@ const ProjectDalHomepage = () => {
             <div className="relative inline-block group">
               {/* Pop-out images */}
               <img
-                src="/HeroPic.png"
+                src="/ArduinoProject.png"
                 alt="preview 1"
                 className="pointer-events-none select-none absolute -top-6 left-6 w-10 h-10 rounded-lg shadow-lg opacity-0 translate-y-2 rotate-[-10deg] blur-[0.2px] transition-all duration-300 ease-out transform-gpu group-hover:opacity-100 group-hover:translate-y-[-8px] group-hover:rotate-[-16deg]"
                 style={{ transitionDelay: "40ms", zIndex: 0 }}
@@ -131,22 +143,34 @@ const ProjectDalHomepage = () => {
                 style={{ transitionDelay: "80ms", zIndex: 0 }}
               />
               <img
-                src="/HeroPic.png"
+                src="/BotProject.png"
                 alt="preview 3"
                 className="pointer-events-none select-none absolute -top-4 left-40 w-9 h-9 rounded-md shadow-lg opacity-0 translate-y-2 rotate-[-4deg] transition-all duration-300 ease-out transform-gpu group-hover:opacity-100 group-hover:translate-y-[-20px] group-hover:rotate-[-10deg]"
                 style={{ transitionDelay: "120ms", zIndex: 0 }}
               />
 
               {/* Button */}
-              <button className="relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-xl transform-gpu transition-all duration-300 ease-out hover:-translate-y-1">
+              <button className="relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-xl transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
+                {/* Animated border */}
+                <span
+                  className="absolute inset-0 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
+                    backgroundSize: "200% 200%",
+                    animation: "borderGlow 2s linear infinite",
+                  }}
+                >
+                  <span className="block w-full h-full rounded-2xl bg-gradient-to-r from-blue-500 to-purple-800"></span>
+                </span>
                 <Zap className="w-5 h-5 group-hover:animate-spin" />
-                Upload Project
+                <div className="flex-1 z-100">Upload Project</div>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
 
             {/* Explore Projects Button */}
-            <button className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center">
+            <button className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center cursor-pointer shadow-md">
               <Eye className="w-5 h-5 mr-2" />
               Explore Projects
             </button>
