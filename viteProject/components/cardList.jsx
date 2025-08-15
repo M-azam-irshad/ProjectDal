@@ -89,6 +89,24 @@ const cardList = [
     tags: ["Mechatronics", "Robotics"],
     price: "$50",
   },
+  {
+    image: "/VR-Headset-min.png",
+    title: "VR Gaming Headset",
+    description: "A virtual reality headset for an immersive gaming experience.",
+    author: "Farah Rehman",
+    rating: 4.7,
+    tags: ["Gaming", "VR"],
+    price: "$35",
+  },
+  {
+    image: "/Drone-racing-min.png",
+    title: "FPV Racing Drone",
+    description: "A first-person view drone designed for high-speed racing.",
+    author: "Saad Sheikh",
+    rating: 4.5,
+    tags: ["Drones", "Racing"],
+    price: "$30",
+  },
 ];
 
 export default cardList;
