@@ -1,10 +1,11 @@
 import ProjectDalHomepage from "../components/HomePage.jsx";
 import FeaturedCards from "../components/FeaturedCards.jsx";
 import cardList from "../components/cardList.jsx";
-import AddProject from "../components/AddProject.jsx";
+import AdditionComponent from "../components/AdditionComponent.jsx";
 import ProjectUploader from "../components/ProjectUploader.jsx";
 import { useEffect, useState } from "react";
 import Lenis from "@studio-freight/lenis";
+import FeedbackAdditionComponent from "../components/FeedbackAdditionComponent.jsx";
 
 function App() {
   const [uploaderState, setUploaderState] = useState(false);
@@ -27,18 +28,22 @@ function App() {
 
   return (
     <>
+
+
+   
       {uploaderState ? (
-        // If true, show uploader
         <ProjectUploader />
       ) : (
-        // If false, show the other three
         <div>
           <ProjectDalHomepage />
           <FeaturedCards cardList={cardList} />
-          {/* Pass the setter so AddProject can toggle it */}
-          <AddProject prop={setUploaderState} />
+          <AdditionComponent prop={setUploaderState} />
+          <FeedbackAdditionComponent />
         </div>
       )}
+   
+  
+
     </>
   );
 }
