@@ -12,7 +12,8 @@
 </style>;
 
 import React, { useState, useEffect } from "react";
-import FancyButton from "./sub-components/FancyButton";
+
+import Navbar from "./sub-components/Navbar"
 import {
   ChevronDown,
   Sparkles,
@@ -56,54 +57,14 @@ const ProjectDalHomepage = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-500 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-700 rounded-xl flex items-center justify-center rotate-3 shadow-lg">
-                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                </div>
-              </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                <Sparkles className="w-2 h-2 text-white" />
-              </div>
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-900 bg-clip-text text-transparent">
-              ProjectDal
-            </h1>
-          </div>
-
-          {/* Menu */}
-          <div className="sm:text-xl md:flex items-center space-x-8 text-xl ">
-            {["Home", "Projects", "About"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="relative text-white hover:text-purple-900 font-medium group transition-transform duration-300 ease-in-out hover:scale-[1.2]"
-              >
-                {item}
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-black/50 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-              </a>
-            ))}
-          </div>
-
-          {/* Buttons */}
-          <div className="flex items-center space-x-4">
-            <FancyButton children={`Sign in`} />
-            <FancyButton children={`Get started`} bgColor="bg-gradient-to-r from-blue-400 to-purple-900" textColor="text-white/90" />
-      
-          </div>
-        </div>
-      </nav>
+      <Navbar/>
 
       {/* Hero Section */}
       <div
         id="Hero"
-        className="relative z-10 flex items-center justify-center min-h-[80vh] text-center px-6"
+        className="relative z-10 flex items-center justify-center min-h-[80vh] text-center px-6 py-12 md:py-0"
       >
-        <div className="max-w-4xl space-y-8">
+        <div className="max-w-4xl space-y-8 mt-6 md:mt-0"> 
           {/* Badge */}
           <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-700 animate-bounce">
             <Trophy className="w-4 h-4 mr-2" />
@@ -127,7 +88,7 @@ const ProjectDalHomepage = () => {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {/* Upload Project Button with Pop-out Images */}
-            <div className="relative inline-block group">
+            <div className="relative inline-block group ">
               {/* Pop-out images */}
               <img
                 src="/ArduinoProject.png"
@@ -149,10 +110,10 @@ const ProjectDalHomepage = () => {
               />
 
               {/* Button */}
-              <button className="relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center  cursor-pointer shadow-md hover:shadow-xl transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
+              <button className="w-full relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center border-2 border-purple-500  cursor-pointer shadow-md hover:shadow-xl hover:border-0 transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
                 {/* Animated border */}
                 <span
-                  className="absolute inset-0 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="w-full absolute inset-0 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     background:
                       "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
@@ -163,7 +124,7 @@ const ProjectDalHomepage = () => {
                   <span className="block w-full h-full rounded-2xl bg-gradient-to-r from-blue-500 to-purple-800"></span>
                 </span>
                 <Zap className="w-5 h-5 group-hover:animate-spin" />
-                <div className="flex-1 z-100">Upload Project</div>
+                <div className=" w-full flex-1 z-100">Upload Project</div>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
@@ -178,7 +139,7 @@ const ProjectDalHomepage = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10 translate-y-4 md:translate-y-0">
         <ChevronDown className="w-6 h-6 text-white/80" />
       </div>
     </div>
