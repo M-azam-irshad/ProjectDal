@@ -12,6 +12,7 @@
 </style>;
 
 import React, { useState, useEffect } from "react";
+import FancyButton from "./sub-components/FancyButton";
 import {
   ChevronDown,
   Sparkles,
@@ -20,6 +21,7 @@ import {
   ArrowRight,
   Eye,
 } from "lucide-react";
+
 
 const ProjectDalHomepage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -89,12 +91,9 @@ const ProjectDalHomepage = () => {
 
           {/* Buttons */}
           <div className="flex items-center space-x-4">
-            <button className="px-4 py-2 text-white font-medium hover:scale-110 transition-transform cursor-pointer">
-              Sign In
-            </button>
-            <button className="px-6 py-2 bg-gradient-to-r from-blue-400 to-purple-900 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium cursor-pointer">
-              Get Started
-            </button>
+            <FancyButton children={`Sign in`} />
+            <FancyButton children={`Get started`} bgColor="bg-gradient-to-r from-blue-400 to-purple-900" textColor="text-white/90" />
+      
           </div>
         </div>
       </nav>
@@ -150,7 +149,7 @@ const ProjectDalHomepage = () => {
               />
 
               {/* Button */}
-              <button className="relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-xl transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
+              <button className="relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center  cursor-pointer shadow-md hover:shadow-xl transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
                 {/* Animated border */}
                 <span
                   className="absolute inset-0 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"

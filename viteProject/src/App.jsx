@@ -6,6 +6,7 @@ import ProjectUploader from "../components/ProjectUploader.jsx";
 import { useEffect, useState } from "react";
 import Lenis from "@studio-freight/lenis";
 import FeedbackAdditionComponent from "../components/FeedbackAdditionComponent.jsx";
+import Footer from "../components/Footer.jsx"
 
 function App() {
   const [uploaderState, setUploaderState] = useState(false);
@@ -39,6 +40,7 @@ function App() {
           <FeaturedCards cardList={cardList} />
           <AdditionComponent prop={setUploaderState} />
           <FeedbackAdditionComponent />
+          <Footer/>
         </div>
       )}
    
