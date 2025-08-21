@@ -1,11 +1,15 @@
 import { Suspense, useEffect, useState, lazy } from "react";
+import { BrowserRouter, Routes, Route, Outlet, useOutletContext } from "react-router-dom";
 import Lenis from "@studio-freight/lenis";
+import Navbar from "../components/sub-components/Navbar.jsx"; // Your navbar component
 
-const ProjectDalHomepage = lazy(()=> import("../components/HomePage.jsx"))
-const FeaturedCards = lazy(()=> import("../components/FeaturedCards.jsx"))
-const AdditionComponent = lazy(()=> import("../components/AdditionComponent.jsx"))
-const FeedbackAdditionComponent = lazy(()=> import("../components/FeedbackAdditionComponent.jsx"))
-const Footer = lazy(()=> import("../components/Footer.jsx"))
+// Lazy load components
+const ProjectDalHomepage = lazy(() => import("../components/HomePage.jsx"));
+const FeaturedCards = lazy(() => import("../components/FeaturedCards.jsx"));
+const AdditionComponent = lazy(() => import("../components/AdditionComponent.jsx"));
+const FeedbackAdditionComponent = lazy(() => import("../components/FeedbackAdditionComponent.jsx"));
+const Footer = lazy(() => import("../components/Footer.jsx"));
+const About = lazy(()=> import("../components/About.jsx"))
 
 import cardList from "../components/cardList.jsx";
 import ProjectUploader from "../components/ProjectUploader.jsx";
@@ -90,7 +94,8 @@ const EnhancedLoadingFallback = () => {
   );
 };
 
-function App() {
+// Layout component that includes navbar
+function Layout() {
   const [uploaderState, setUploaderState] = useState(false);
 
   useEffect(() => {
@@ -111,18 +116,59 @@ function App() {
 
   return (
     <>
-      {uploaderState ? (
-        <ProjectUploader />
-      ) : (
-        <Suspense fallback={<EnhancedLoadingFallback />}>
-          <ProjectDalHomepage />
-          <FeaturedCards cardList={cardList} />
-          <AdditionComponent prop={setUploaderState} />
-          <FeedbackAdditionComponent />
-          <Footer />
-        </Suspense>
-      )}
+      <Navbar />
+      <main>
+        {uploaderState ? (
+          <ProjectUploader />
+        ) : (
+          <Outlet context={{ setUploaderState }} />
+        )}
+      </main>
     </>
+  );
+}
+
+// Home page component
+function HomePage() {
+  return (
+    <Suspense fallback={<EnhancedLoadingFallback />}>
+      <ProjectDalHomepage />
+      <FeaturedCards cardList={cardList} />
+      <AdditionComponent prop={useOutletContext().setUploaderState} />
+      <FeedbackAdditionComponent />
+      <Footer />
+    </Suspense>
+  );
+}
+
+// Projects page component
+function ProjectsPage() {
+  return (
+    <Suspense fallback={<EnhancedLoadingFallback />}>
+      <div className="min-h-screen bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <h1 className="text-4xl font-bold text-center mb-8">Our Projects</h1>
+          <FeaturedCards id={"featuredProjects"} cardList={cardList} />
+        </div>
+      </div>
+    </Suspense>
+  );
+}
+
+
+
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="/projects" element={<ProjectsPage id={"featuredProjects"} />} />
+          <Route path="/about" element={<About prop={<EnhancedLoadingFallback/>}/>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

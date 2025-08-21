@@ -1,4 +1,4 @@
-<style>
+<style jsx={true}>
   {`
   @keyframes neonBorder {
     0% {
@@ -12,8 +12,10 @@
 </style>;
 
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
-import Navbar from "./sub-components/Navbar"
+
 import {
   ChevronDown,
   Sparkles,
@@ -21,6 +23,7 @@ import {
   Zap,
   ArrowRight,
   Eye,
+
 } from "lucide-react";
 
 
@@ -36,7 +39,7 @@ const ProjectDalHomepage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-hidden relative">
+    <div className="min-h-screen overflow-hidden relative" id="top">
       {/* Background `Video` */}
       <div className="absolute inset-0 overflow-hidden">
         <video
@@ -57,7 +60,6 @@ const ProjectDalHomepage = () => {
       </div>
 
       {/* Navigation */}
-      <Navbar/>
 
       {/* Hero Section */}
       <div
@@ -130,10 +132,16 @@ const ProjectDalHomepage = () => {
             </div>
 
             {/* Explore Projects Button */}
-            <button className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center cursor-pointer shadow-md">
+            <div>
+            <HashLink
+              smooth = {(el)=> el.scrollIntoView({behaviour:'smooth', block:"start"})}
+              to="/#featuredProjects"
+              className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center cursor-pointer shadow-md"
+            >
               <Eye className="w-5 h-5 mr-2" />
-              Explore Projects
-            </button>
+              Explore featured Projects
+            </HashLink>
+            </div>
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 import React, { useState, useMemo } from "react";
 import {  Search, X, Tag } from "lucide-react";
 
-function FeaturedCards({ cardList: propCardList }) {
+function FeaturedCards({ cardList: propCardList, color="none"}) {
   // Use props if provided, otherwise use default cardList
   const cards = propCardList || cardList;
   
@@ -130,7 +130,7 @@ function FeaturedCards({ cardList: propCardList }) {
   };
 
   return (
-    <main className="px-6 py-10">
+    <main className="px-6 py-10" id="featuredProjects" style={{backgroundColor:`${color}`}} >
       {/* Section Title */}
       <h2
         className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent mb-8 text-center"

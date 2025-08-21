@@ -11,6 +11,7 @@ import {
     X,
   } from "lucide-react";
 
+  import {  Link } from "react-router-dom";
 
 
 
@@ -21,7 +22,11 @@ function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const menuItems = ["Home", "Projects", "About"];
+  const menuItems = [
+    {name:"Home", path:"/"},
+    {name:"Projects", path:"/projects"},
+    {name:"About", path:"/about"}
+  ];
 
   // Logo Component (reused in both layouts)
   const Logo = () => (
@@ -37,7 +42,7 @@ function Navbar() {
         </div>
       </div>
       <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-900 bg-clip-text text-transparent">
-        ProjectDal
+        ProjectDekha
       </h1>
     </div>
   );
@@ -53,14 +58,14 @@ function Navbar() {
           {/* Menu */}
           <div className="flex items-center space-x-8 text-xl">
             {menuItems.map((item) => (
-              <a
-                key={item}
-                href="#"
+              <Link
+                key={item.name}
+                to={item.path}
                 className="relative text-white hover:text-purple-900 font-medium group transition-transform duration-300 ease-in-out hover:scale-[1.2]"
               >
-                {item}
+                {item.name}
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-black/50 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -104,14 +109,14 @@ function Navbar() {
               {/* Mobile Navigation */}
               <div className="space-y-4">
                 {menuItems.map((item) => (
-                  <a
-                    key={item}
-                    href="#"
+                  <Link
+                    key={item.name}
+                    to ={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block text-white hover:text-purple-200 font-medium text-lg transition-colors duration-300 py-2 border-b border-white/10 last:border-b-0"
                   >
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 ))}
               </div>
 
