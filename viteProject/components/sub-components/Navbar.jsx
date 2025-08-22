@@ -1,21 +1,27 @@
 import { useState } from "react";
 import FancyButton from "./FancyButton";
+import { useAuth } from "../../Auth/AuthProvider"; // Make sure this path is correct
 import {
-    ChevronDown,
-    Sparkles,
-    Trophy,
-    Zap,
-    ArrowRight,
-    Eye,
-    Menu,
-    X,
-  } from "lucide-react";
+  ChevronDown,
+  Sparkles,
+  Trophy,
+  Zap,
+  ArrowRight,
+  Eye,
+  Menu,
+  X,
+} from "lucide-react";
 
-  import {  Link } from "react-router-dom";
-
-
+import { Link } from "react-router-dom";
 
 function Navbar() {
+  // Add debugging to see what useAuth returns
+
+  const authData = useAuth();
+  console.log("Auth data:", authData); // Debug line
+
+  const { isAuthenticated, openAuthModal, signOut, user } = authData;
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -23,10 +29,20 @@ function Navbar() {
   };
 
   const menuItems = [
-    {name:"Home", path:"/"},
-    {name:"Projects", path:"/projects"},
-    {name:"About", path:"/about"}
+    { name: "Home", path: "/" },
+    { name: "Projects", path: "/projects" },
+    { name: "About", path: "/about" },
   ];
+
+  // Add safety check for openAuthModal
+  const handleAuthModal = (mode) => {
+    console.log("openAuthModal:", openAuthModal); // Debug line
+    if (typeof openAuthModal === "function") {
+      openAuthModal(mode);
+    } else {
+      console.error("openAuthModal is not a function:", openAuthModal);
+    }
+  };
 
   // Logo Component (reused in both layouts)
   const Logo = () => (
@@ -71,12 +87,45 @@ function Navbar() {
 
           {/* Buttons */}
           <div className="flex items-center space-x-4">
-            <FancyButton children={`Sign in`} />
-            <FancyButton 
-              children={`Get started`} 
-              bgColor="bg-gradient-to-r from-blue-400 to-purple-900" 
-              textColor="text-white/90" 
-            />
+            {isAuthenticated ? (
+              <>
+                <span className="text-sm text-gray-600">
+                  Hello, {user?.email}
+                </span>
+                <button
+                  onClick={signOut}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <div className="space-x-2">
+                <button
+                  onClick={() => handleAuthModal("signup")}
+                  className={`
+        px-6 py-3 
+        rounded-[26px] 
+        text-black font-semibold 
+        shadow-[35px_35px_68px_0px_rgba(62,139,248,0.5),inset_-9px_-9px_6px_0px_rgba(62,139,248,0.6),inset_0px_11px_18px_0px_rgb(255,255,255)]
+        bg-white
+        backdrop-blur-[0px]
+        transition-transform duration-200
+        hover:scale-105 active:scale-95
+        cursor-pointer
+      `}
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
+            {authData ? (
+              <FancyButton
+                children={`Get started`}
+                bgColor="bg-gradient-to-r from-blue-400 to-purple-900"
+                textColor="text-white/90"
+              />
+            ) : null}
           </div>
         </div>
       </div>
@@ -111,7 +160,7 @@ function Navbar() {
                 {menuItems.map((item) => (
                   <Link
                     key={item.name}
-                    to ={item.path}
+                    to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block text-white hover:text-purple-200 font-medium text-lg transition-colors duration-300 py-2 border-b border-white/10 last:border-b-0"
                   >
@@ -121,17 +170,38 @@ function Navbar() {
               </div>
 
               {/* Mobile Buttons */}
+              {/* Mobile Buttons */}
               <div className="space-y-3 pt-4 border-t border-white/20">
-                <div className="w-full">
-                  <FancyButton children={`Sign in`} />
-                </div>
-                <div className="w-full">
-                  <FancyButton 
-                    children={`Get started`} 
-                    bgColor="bg-gradient-to-r from-blue-400 to-purple-900" 
-                    textColor="text-white/90" 
-                  />
-                </div>
+                {isAuthenticated ? (
+                  <>
+                    <span className="block text-sm text-gray-200">
+                      Hello, {user?.email}
+                    </span>
+                    <button
+                      onClick={signOut}
+                      className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-full">
+                      <FancyButton
+                        children={`Sign in`}
+                        onClick={() => handleAuthModal("signin")}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <FancyButton
+                        children={`Sign up`}
+                        bgColor="bg-gradient-to-r from-blue-400 to-purple-900"
+                        textColor="text-white/90"
+                        onClick={() => handleAuthModal("signup")}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
