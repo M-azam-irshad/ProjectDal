@@ -120,11 +120,21 @@ function Navbar() {
               </div>
             )}
             {authData ? (
-              <FancyButton
-                children={`Get started`}
-                bgColor="bg-gradient-to-r from-blue-400 to-purple-900"
-                textColor="text-white/90"
-              />
+              <button
+                className={`
+        px-6 py-3 
+        rounded-[26px] 
+        text-black font-semibold 
+        shadow-[35px_35px_68px_0px_rgba(62,139,248,0.5),inset_-9px_-9px_6px_0px_rgba(62,139,248,0.6),inset_0px_11px_18px_0px_rgb(255,255,255)]
+        bg-white
+        backdrop-blur-[0px]
+        transition-transform duration-200
+        hover:scale-105 active:scale-95
+        cursor-pointer
+      `}
+              >
+                Get started
+              </button>
             ) : null}
           </div>
         </div>
@@ -187,18 +197,23 @@ function Navbar() {
                 ) : (
                   <>
                     <div className="w-full">
-                      <FancyButton
-                        children={`Sign in`}
-                        onClick={() => handleAuthModal("signin")}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <FancyButton
+                      <button
                         children={`Sign up`}
-                        bgColor="bg-gradient-to-r from-blue-400 to-purple-900"
-                        textColor="text-white/90"
                         onClick={() => handleAuthModal("signup")}
-                      />
+                        className={`
+                          px-6 py-3 
+                          rounded-[26px] 
+                          text-black font-semibold 
+                          shadow-[35px_35px_68px_0px_rgba(62,139,248,0.5),inset_-9px_-9px_6px_0px_rgba(62,139,248,0.6),inset_0px_11px_18px_0px_rgb(255,255,255)]
+                          bg-white
+                          backdrop-blur-[0px]
+                          transition-transform duration-200
+                          hover:scale-105 active:scale-95
+                          cursor-pointer
+                        `}
+                      >
+                        Sign up
+                      </button>
                     </div>
                   </>
                 )}
