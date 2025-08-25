@@ -121,7 +121,7 @@ function Footer() {
             <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2">
               {[
                 {name:"Home", path:"/"},
-                {name:"Discover", path:"/projects"},
+                {name:"Projects", path:"/allprojects"},
                 {name:"About", path:"/about"},
                 
               ].map((item) => (

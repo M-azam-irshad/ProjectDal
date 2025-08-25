@@ -3,8 +3,9 @@ import { Star } from "lucide-react";
 
 import React, { useState, useMemo } from "react";
 import {  Search, X, Tag } from "lucide-react";
+import cardList from "./cardList";
 
-function FeaturedCards({ cardList: propCardList, color="none"}) {
+function AllProjectCards({ cardList: propCardList, color="none"}) {
   // Use props if provided, otherwise use default cardList
   const cards = propCardList || cardList;
   
@@ -139,25 +140,98 @@ function FeaturedCards({ cardList: propCardList, color="none"}) {
           letterSpacing: "-0.025em"
         }}
       >
-        Featured Projects
+        All Projects
       </h2>
 
       {/* Search and Filter Section */}
       <div className="max-w-6xl mx-auto mb-10">
         {/* Search Bar */}
-
+        <div className="relative mb-6">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search projects, tags, authors..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-3xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm text-gray-700 placeholder-gray-400"
+            style={{ fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif" }}
+          />
+        </div>
 
         {/* Filter Controls */}
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-6">
           {/* Active Filters */}
+          <div className="flex-1">
+            <div className="flex items-center flex-wrap gap-3 mb-3">
+              {selectedTags.length > 0 && (
+                <div className="flex items-center gap-2 mr-4">
+                  <Tag className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-700">Active:</span>
+                </div>
+              )}
+              {selectedTags.map(tag => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-3 py-1 backdrop-blur-md bg-blue-100/70 text-blue-800 rounded-full text-sm font-medium border border-blue-200/50 shadow-sm"
+                >
+                  {tag}
+                  <X
+                    className="w-4 h-4 ml-1 cursor-pointer hover:text-blue-900 transition-colors"
+                    onClick={() => toggleTag(tag)}
+                  />
+                </span>
+              ))}
+              {(selectedTags.length > 0 || searchQuery.trim()) && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-sm text-red-600 hover:text-red-700 transition-colors font-medium"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
 
+            {/* Suggested Tags */}
+            <div className="flex flex-wrap gap-2">
+              <span className="text-sm text-gray-600 mr-2">
+                {selectedTags.length > 0 ? 'Related:' : 'Popular:'}
+              </span>
+              {suggestedTags.map(({ name, count }) => (
+                <button
+                  key={name}
+                  onClick={() => toggleTag(name)}
+                  className="inline-flex items-center px-3 py-1 backdrop-blur-md bg-white/70 text-gray-700 rounded-full text-sm hover:bg-gray-100/70 transition-all duration-200 border border-gray-200/50 shadow-sm"
+                >
+                  {name}
+                  <span className="ml-1 text-xs text-gray-500">({count})</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Sort Control */}
- 
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600">Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="backdrop-blur-md bg-white/70 border border-gray-200/50 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+            >
+              <option value="relevance">Relevance</option>
+              <option value="rating">Rating</option>
+              <option value="name">Name</option>
+              <option value="author">Author</option>
+            </select>
+          </div>
         </div>
 
         {/* Results Count */}
- 
+        <p className="text-sm text-gray-600 mb-6">
+          {filteredCards.length} project{filteredCards.length !== 1 ? 's' : ''} found
+          {(selectedTags.length > 0 || searchQuery.trim()) && (
+            <span> matching your criteria</span>
+          )}
+        </p>
       </div>
 
       {/* Card Grid */}
@@ -251,4 +325,4 @@ function FeaturedCards({ cardList: propCardList, color="none"}) {
   );
 }
 
-export default FeaturedCards;
+export default AllProjectCards;

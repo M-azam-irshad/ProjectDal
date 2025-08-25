@@ -30,7 +30,7 @@ function Navbar() {
 
   const menuItems = [
     { name: "Home", path: "/" },
-    { name: "Projects", path: "/projects" },
+    { name: "Projects", path: "/allprojects" },
     { name: "About", path: "/about" },
   ];
 
@@ -124,9 +124,9 @@ function Navbar() {
                 className={`
         px-6 py-3 
         rounded-[26px] 
-        text-black font-semibold 
+        text-white font-semibold 
         shadow-[35px_35px_68px_0px_rgba(62,139,248,0.5),inset_-9px_-9px_6px_0px_rgba(62,139,248,0.6),inset_0px_11px_18px_0px_rgb(255,255,255)]
-        bg-white
+        bg-gradient-to-r from-blue-400 to-purple-900
         backdrop-blur-[0px]
         transition-transform duration-200
         hover:scale-105 active:scale-95

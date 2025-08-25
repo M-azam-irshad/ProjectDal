@@ -20,11 +20,15 @@ const AdditionComponent = lazy(() =>
 const FeedbackAdditionComponent = lazy(() =>
   import("../components/FeedbackAdditionComponent.jsx")
 );
+const AllProjectCards = lazy(() =>
+  import("../components/AllProjectCards.jsx")
+);
 const Footer = lazy(() => import("../components/Footer.jsx"));
 const About = lazy(() => import("../components/About.jsx"));
 
 import cardList from "../components/cardList.jsx";
 import ProjectUploader from "../components/ProjectUploader.jsx";
+
 
 // Custom Authentication Component
 
@@ -228,6 +232,10 @@ function App() {
           <Route
             path="/projects"
             element={<ProjectsPage id={"featuredProjects"} />}
+          />
+          <Route
+            path="/allprojects"
+            element={<AllProjectCards id={"AllProjectCards"}  />}
           />
           <Route
             path="/about"
