@@ -25,9 +25,8 @@ const AllProjectCards = lazy(() =>
 );
 const Footer = lazy(() => import("../components/Footer.jsx"));
 const About = lazy(() => import("../components/About.jsx"));
-
+const ProjectUploader = lazy(() => import("../components/ProjectUploader.jsx"));
 import cardList from "../components/cardList.jsx";
-import ProjectUploader from "../components/ProjectUploader.jsx";
 
 
 // Custom Authentication Component
@@ -241,6 +240,7 @@ function App() {
             path="/about"
             element={<About prop={<EnhancedLoadingFallback />} />}
           />
+        <Route path="/projectUploader" element={<ProjectUploader />} />
         </Route>
       </Routes>
     </BrowserRouter>

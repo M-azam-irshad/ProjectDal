@@ -1,5 +1,6 @@
 import React from "react";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function AdditionComponent({ prop }) {
   function openProjectUploader() {
@@ -20,7 +21,7 @@ function AdditionComponent({ prop }) {
             Add Your Project
           </h1>
         </div>
-        <div className="w-full h-full min-h-[350px] relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl  border border-blue-100/50 overflow-hidden">
+        <div className="w-full h-full min-h-[350px] relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl border border-blue-100/50 overflow-hidden">
           {/* Background decorative elements */}
           {/* Large floating orbs */}
           <div className="absolute top-8 right-8 w-20 h-20 bg-blue-200/30 rounded-full blur-xl animate-pulse"></div>
@@ -126,7 +127,14 @@ function AdditionComponent({ prop }) {
               onClick={openProjectUploader}
             >
               {/* Upload container */}
-              <div className="bg-gradient-to-br from-white/80 to-blue-50/60 backdrop-blur-sm rounded-2xl shadow-[inset_4px_4px_12px_rgba(59,130,246,0.1),inset_-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_16px_rgba(59,130,246,0.08)] border border-white/40 p-12 text-center transition-all duration-300 ease-out group-hover:shadow-[inset_6px_6px_16px_rgba(59,130,246,0.12),inset_-6px_-6px_16px_rgba(255,255,255,0.9),6px_6px_20px_rgba(59,130,246,0.12)]">
+              <Link 
+                to="/projectUploader" 
+                className="block no-underline bg-gradient-to-br from-white/80 to-blue-50/60 backdrop-blur-sm rounded-2xl 
+                shadow-[inset_4px_4px_12px_rgba(59,130,246,0.1),inset_-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_16px_rgba(59,130,246,0.08)]
+                border border-white/40 p-12 text-center transition-all duration-300 ease-out 
+                hover:shadow-[inset_6px_6px_16px_rgba(59,130,246,0.12),inset_-6px_-6px_16px_rgba(255,255,255,0.9),6px_6px_20px_rgba(59,130,246,0.12)]
+                hover:no-underline focus:no-underline active:no-underline visited:no-underline"
+              >
                 {/* Icon container */}
                 <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full shadow-[4px_4px_12px_rgba(59,130,246,0.3),-2px_-2px_8px_rgba(147,197,253,0.4)] transition-all duration-300 ease-out group-hover:shadow-[6px_6px_16px_rgba(59,130,246,0.4),-3px_-3px_12px_rgba(147,197,253,0.5)] group-hover:scale-110 group-active:scale-95">
                   <Plus
@@ -147,7 +155,7 @@ function AdditionComponent({ prop }) {
 
                 {/* Subtle pulse animation */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/5 to-blue-600/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              </div>
+              </Link>
             </div>
           </div>
 

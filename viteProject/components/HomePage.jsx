@@ -126,7 +126,7 @@ const ProjectDalHomepage = () => {
                   <span className="block w-full h-full rounded-2xl bg-gradient-to-r from-blue-500 to-purple-800"></span>
                 </span>
                 <Zap className="w-5 h-5 group-hover:animate-spin" />
-                <div className=" w-full flex-1 z-100">Upload Project</div>
+                <Link to={"/projectUploader"} className=" w-full flex-1 z-100">Upload Project</Link>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>

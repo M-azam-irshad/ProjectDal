@@ -2,16 +2,8 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  "https://ssvlbobqhyonwgbpqyjx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzdmxib2JxaHlvbndnYnBxeWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3ODgwNzcsImV4cCI6MjA3MTM2NDA3N30.okztMOEbYgWSwqTHYVkKsWO_99wQRnxTslqplV1qA7o",
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  }
-);
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+
 
 const AuthModal = ({ isOpen, onClose, defaultMode = "signin" }) => {
   const [isSignUp, setIsSignUp] = useState(defaultMode === "signup");

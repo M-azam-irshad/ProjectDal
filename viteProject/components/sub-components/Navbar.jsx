@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   // Add debugging to see what useAuth returns
-
+  const [getStarted, setGetStarted] = useState(false);
   const authData = useAuth();
   console.log("Auth data:", authData); // Debug line
 
@@ -119,9 +119,12 @@ function Navbar() {
                 </button>
               </div>
             )}
-            {authData ? (
-              <button
-                className={`
+            {authData
+              ? (!getStarted ? (
+                  <Link
+                    to="/projectUploader"
+                    onClick={() => setGetStarted(true)}
+                    className={`
         px-6 py-3 
         rounded-[26px] 
         text-white font-semibold 
@@ -132,10 +135,11 @@ function Navbar() {
         hover:scale-105 active:scale-95
         cursor-pointer
       `}
-              >
-                Get started
-              </button>
-            ) : null}
+                  >
+                    Get started
+                  </Link>
+                ) : null)
+              : null}
           </div>
         </div>
       </div>
