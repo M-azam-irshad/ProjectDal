@@ -51,8 +51,8 @@ const ProjectDalHomepage = () => {
           preload="none"
           poster="fallback.jpg"
         >
-          <source src="/ProjectDalBgVideoCompressed.webm" type="video/webm" />
-          <source src="/ProjectDalBgVideoCompressed.mp4" type="video/mp4" />
+          <source src="/ProjectDalBgVideo_HandBrake_Compressed.webm" type="video/webm" />
+          <source src="/ProjectDalBgVideo_HandBrake_Compressed.mp4" type="video/mp4" />
         </video>
         {/* Vignette Overlays */}
         <div className="absolute inset-0 bg-black/40 pointer-events-none" />
