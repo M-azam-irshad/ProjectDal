@@ -77,7 +77,7 @@ function Navbar() {
         </div>
       </div>
       <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-900 bg-clip-text text-transparent">
-        ProjectDekha
+        ProjectLaga
       </h1>
     </div>
   );

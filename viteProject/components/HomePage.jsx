@@ -11,10 +11,10 @@
   `}
 </style>;
 
-import React, { useState, useEffect, startTransition }  from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { useAuth } from "../Auth/AuthProvider.jsx";
+import useNavigationLogic from "./sub-components/NavigationLogic.jsx";
 
 import {
   ChevronDown,
@@ -25,12 +25,9 @@ import {
   Eye,
 } from "lucide-react";
 
-
 const ProjectDalHomepage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const authData = useAuth();
-  const { isAuthenticated, openAuthModal } = authData;
-  
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -39,31 +36,8 @@ const ProjectDalHomepage = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const handleAuthModal = (mode) => {
-    console.log("openAuthModal:", openAuthModal); // Debug line
-    if (typeof openAuthModal === "function") {
-      openAuthModal(mode);
-    } else {
-      console.error("openAuthModal is not a function:", openAuthModal);
-    }
-  };
 
-  const handleNav = (path) => {
-  startTransition(() => {
-    navigate(path);
-  });
-};
-
-  const navigate = useNavigate();
-  const handleUploadClick = (e) => {
-    e.preventDefault(); // stop default navigation first
-
-    if (isAuthenticated) {
-      handleNav("/projectUploader"); // go to uploader if signed in
-    } else {
-      handleAuthModal("signin"); // open auth modal if not signed in
-    }
-  };
+  const { handleNav } = useNavigationLogic();
   return (
     <div className="min-h-screen overflow-hidden relative" id="top">
       {/* Background `Video` */}
@@ -147,7 +121,7 @@ const ProjectDalHomepage = () => {
 
               {/* Button - REMOVE the Link component and use onClick directly */}
               <button
-                onClick={handleUploadClick}
+                onClick={() => handleNav("/projectUploader")}
                 className="w-full relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center border-2 border-purple-500  cursor-pointer shadow-md hover:shadow-xl hover:border-0 transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden"
               >
                 {/* Animated border */}
