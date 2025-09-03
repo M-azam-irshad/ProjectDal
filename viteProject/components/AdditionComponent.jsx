@@ -1,11 +1,40 @@
-import React from "react";
+import { React, startTransition } from "react";
 import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../Auth/AuthProvider.jsx";
 function AdditionComponent({ prop }) {
   function openProjectUploader() {
     return prop(true);
   }
+
+  const authData = useAuth();
+  const { isAuthenticated, openAuthModal } = authData;
+
+  const handleAuthModal = (mode) => {
+    console.log("openAuthModal:", openAuthModal); // Debug line
+    if (typeof openAuthModal === "function") {
+      openAuthModal(mode);
+    } else {
+      console.error("openAuthModal is not a function:", openAuthModal);
+    }
+  };
+
+  const handleNav = (path) => {
+    startTransition(() => {
+      navigate(path);
+    });
+  };
+  
+  const navigate = useNavigate();
+  const handleUploadClick = (e) => {
+    e.preventDefault(); // stop default navigation first
+
+    if (isAuthenticated) {
+      handleNav("/projectUploader"); // go to uploader if signed in
+    } else {
+      handleAuthModal("signin"); // open auth modal if not signed in
+    }
+  };
 
   return (
     <>
@@ -127,8 +156,8 @@ function AdditionComponent({ prop }) {
               onClick={openProjectUploader}
             >
               {/* Upload container */}
-              <Link 
-                to="/projectUploader" 
+              <button
+                onClick={handleUploadClick}
                 className="block no-underline bg-gradient-to-br from-white/80 to-blue-50/60 backdrop-blur-sm rounded-2xl 
                 shadow-[inset_4px_4px_12px_rgba(59,130,246,0.1),inset_-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_16px_rgba(59,130,246,0.08)]
                 border border-white/40 p-12 text-center transition-all duration-300 ease-out 
@@ -155,7 +184,7 @@ function AdditionComponent({ prop }) {
 
                 {/* Subtle pulse animation */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/5 to-blue-600/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              </Link>
+              </button>
             </div>
           </div>
 

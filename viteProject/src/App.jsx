@@ -1,5 +1,7 @@
 import { Suspense, useEffect, useState, lazy } from "react";
 import { AuthProvider } from "../Auth/AuthProvider.jsx";
+import {useAuth} from "../Auth/AuthProvider.jsx";
+import { useNavigate } from "react-router-dom";
 import {
   BrowserRouter,
   Routes,
@@ -159,6 +161,7 @@ const EnhancedLoadingFallback = () => {
 
 // Layout component that includes navbar
 function Layout() {
+ 
   const [uploaderState, setUploaderState] = useState(false);
 
   useEffect(() => {
@@ -182,7 +185,7 @@ function Layout() {
       <Navbar />
       <main>
         {uploaderState ? (
-          <ProjectUploader />
+          <ProjectUploader setUploaderState={setUploaderState} />
         ) : (
           <Outlet context={{ setUploaderState }} />
         )}

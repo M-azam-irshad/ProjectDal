@@ -1,20 +1,20 @@
 <style jsx={true}>
   {`
-  @keyframes neonBorder {
-    0% {
-      stroke-dashoffset: 1000;
+    @keyframes neonBorder {
+      0% {
+        stroke-dashoffset: 1000;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
     }
-    100% {
-      stroke-dashoffset: 0;
-    }
-  }
-`}
+  `}
 </style>;
 
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, startTransition }  from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-
+import { useAuth } from "../Auth/AuthProvider.jsx";
 
 import {
   ChevronDown,
@@ -23,13 +23,14 @@ import {
   Zap,
   ArrowRight,
   Eye,
-
 } from "lucide-react";
 
 
 const ProjectDalHomepage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+  const authData = useAuth();
+  const { isAuthenticated, openAuthModal } = authData;
+  
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -38,6 +39,31 @@ const ProjectDalHomepage = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const handleAuthModal = (mode) => {
+    console.log("openAuthModal:", openAuthModal); // Debug line
+    if (typeof openAuthModal === "function") {
+      openAuthModal(mode);
+    } else {
+      console.error("openAuthModal is not a function:", openAuthModal);
+    }
+  };
+
+  const handleNav = (path) => {
+  startTransition(() => {
+    navigate(path);
+  });
+};
+
+  const navigate = useNavigate();
+  const handleUploadClick = (e) => {
+    e.preventDefault(); // stop default navigation first
+
+    if (isAuthenticated) {
+      handleNav("/projectUploader"); // go to uploader if signed in
+    } else {
+      handleAuthModal("signin"); // open auth modal if not signed in
+    }
+  };
   return (
     <div className="min-h-screen overflow-hidden relative" id="top">
       {/* Background `Video` */}
@@ -66,7 +92,7 @@ const ProjectDalHomepage = () => {
         id="Hero"
         className="relative z-10 flex items-center justify-center min-h-[80vh] text-center px-6 py-12 md:py-0"
       >
-        <div className="max-w-4xl space-y-8 mt-6 md:mt-0"> 
+        <div className="max-w-4xl space-y-8 mt-6 md:mt-0">
           {/* Badge */}
           <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-700 animate-bounce">
             <Trophy className="w-4 h-4 mr-2" />
@@ -74,9 +100,15 @@ const ProjectDalHomepage = () => {
           </div>
 
           {/* Heading */}
-          <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg font-" style={{fontFamily:"Segoe UI, sans-serif"}}>
+          <h1
+            className="text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg font-"
+            style={{ fontFamily: "Segoe UI, sans-serif" }}
+          >
             Where Engineers
-            <span className="block bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-pulse" style={{fontFamily:"Segoe UI, sans-serif"}}>
+            <span
+              className="block bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-pulse"
+              style={{ fontFamily: "Segoe UI, sans-serif" }}
+            >
               Share & Inspire
             </span>
           </h1>
@@ -89,6 +121,8 @@ const ProjectDalHomepage = () => {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Upload Project Button with Pop-out Images */}
+
             {/* Upload Project Button with Pop-out Images */}
             <div className="relative inline-block group ">
               {/* Pop-out images */}
@@ -111,8 +145,11 @@ const ProjectDalHomepage = () => {
                 style={{ transitionDelay: "120ms", zIndex: 0 }}
               />
 
-              {/* Button */}
-              <button className="w-full relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center border-2 border-purple-500  cursor-pointer shadow-md hover:shadow-xl hover:border-0 transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden">
+              {/* Button - REMOVE the Link component and use onClick directly */}
+              <button
+                onClick={handleUploadClick}
+                className="w-full relative z-10 group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-800 text-white rounded-2xl font-semibold flex items-center justify-center border-2 border-purple-500  cursor-pointer shadow-md hover:shadow-xl hover:border-0 transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden"
+              >
                 {/* Animated border */}
                 <span
                   className="w-full absolute inset-0 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -125,22 +162,24 @@ const ProjectDalHomepage = () => {
                 >
                   <span className="block w-full h-full rounded-2xl bg-gradient-to-r from-blue-500 to-purple-800"></span>
                 </span>
-                <Zap className="w-5 h-5 group-hover:animate-spin" />
-                <Link to={"/projectUploader"} className=" w-full flex-1 z-100">Upload Project</Link>
+                <Zap className="w-5 h-5 mr-2 group-hover:animate-spin" />
+                <span className="flex-1 z-10">Upload Project</span>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
 
             {/* Explore Projects Button */}
             <div>
-            <HashLink
-              smooth = {(el)=> el.scrollIntoView({behaviour:'smooth', block:"start"})}
-              to="/#featuredProjects"
-              className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center cursor-pointer shadow-md"
-            >
-              <Eye className="w-5 h-5 mr-2" />
-              Explore featured Projects
-            </HashLink>
+              <HashLink
+                smooth={(el) =>
+                  el.scrollIntoView({ behaviour: "smooth", block: "start" })
+                }
+                to="/#featuredProjects"
+                className="px-8 py-4 bg-white/90 text-gray-800 rounded-2xl border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all font-semibold flex items-center justify-center cursor-pointer shadow-md"
+              >
+                <Eye className="w-5 h-5 mr-2" />
+                Explore featured Projects
+              </HashLink>
             </div>
           </div>
         </div>

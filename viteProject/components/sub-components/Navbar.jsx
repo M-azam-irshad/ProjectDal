@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, startTransition } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import FancyButton from "./FancyButton";
 import { useAuth } from "../../Auth/AuthProvider"; // Make sure this path is correct
 import {
@@ -21,6 +22,7 @@ function Navbar() {
   console.log("Auth data:", authData); // Debug line
 
   const { isAuthenticated, openAuthModal, signOut, user } = authData;
+  const navigate = useNavigate(); // Add this
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -41,6 +43,23 @@ function Navbar() {
       openAuthModal(mode);
     } else {
       console.error("openAuthModal is not a function:", openAuthModal);
+    }
+  };
+
+  const handleNav = (path) => {
+  startTransition(() => {
+    navigate(path);
+  });
+};
+  // Add this function to handle Get Started click
+  const handleGetStartedClick = (e) => {
+    e.preventDefault(); // Prevent default navigation
+
+    if (isAuthenticated) {
+      setGetStarted(true);
+      handleNav("/projectUploader"); // Navigate to uploader if signed in
+    } else {
+      handleAuthModal("signin"); // Open auth modal if not signed in
     }
   };
 
@@ -119,12 +138,11 @@ function Navbar() {
                 </button>
               </div>
             )}
-            {authData
-              ? (!getStarted ? (
-                  <Link
-                    to="/projectUploader"
-                    onClick={() => setGetStarted(true)}
-                    className={`
+            {/* Fixed Get Started Button - Show only when not authenticated or not started yet */}
+            {(!isAuthenticated || !getStarted) && (
+              <button
+                onClick={handleGetStartedClick}
+                className={`
         px-6 py-3 
         rounded-[26px] 
         text-white font-semibold 
@@ -135,11 +153,10 @@ function Navbar() {
         hover:scale-105 active:scale-95
         cursor-pointer
       `}
-                  >
-                    Get started
-                  </Link>
-                ) : null)
-              : null}
+              >
+                Get started
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -184,7 +201,6 @@ function Navbar() {
               </div>
 
               {/* Mobile Buttons */}
-              {/* Mobile Buttons */}
               <div className="space-y-3 pt-4 border-t border-white/20">
                 {isAuthenticated ? (
                   <>
@@ -220,6 +236,28 @@ function Navbar() {
                       </button>
                     </div>
                   </>
+                )}
+                
+                {/* Mobile Get Started Button */}
+                {(!isAuthenticated || !getStarted) && (
+                  <div className="w-full">
+                    <button
+                      onClick={handleGetStartedClick}
+                      className={`
+                        w-full px-6 py-3 
+                        rounded-[26px] 
+                        text-white font-semibold 
+                        shadow-[35px_35px_68px_0px_rgba(62,139,248,0.5),inset_-9px_-9px_6px_0px_rgba(62,139,248,0.6),inset_0px_11px_18px_0px_rgb(255,255,255)]
+                        bg-gradient-to-r from-blue-400 to-purple-900
+                        backdrop-blur-[0px]
+                        transition-transform duration-200
+                        hover:scale-105 active:scale-95
+                        cursor-pointer
+                      `}
+                    >
+                      Get started
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

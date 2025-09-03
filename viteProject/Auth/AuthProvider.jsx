@@ -1,12 +1,9 @@
 // auth/AuthProvider.jsx
 import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import {supabase} from "./supabaseClient.jsx";
 import AuthModal from "./AuthModal";
 
-const supabase = createClient(
-  "https://ssvlbobqhyonwgbpqyjx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzdmxib2JxaHlvbndnYnBxeWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3ODgwNzcsImV4cCI6MjA3MTM2NDA3N30.okztMOEbYgWSwqTHYVkKsWO_99wQRnxTslqplV1qA7o"
-);
+
 
 const AuthContext = createContext({});
 
@@ -58,14 +55,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Function to check if user needs to authenticate for an action
-  const requireAuth = (callback, mode = "signin") => {
-    if (session) {
-      callback();
-    } else {
-      openAuthModal(mode);
-    }
-  };
+const requireAuth = (callback, mode = "signin") => {
+  if (session) {
+    return callback();   // ✅ return callback result (like JSX)
+  } else {
+    openAuthModal(mode);
+    return null;         // ✅ so it doesn’t break rendering
+  }
+};
 
+
+  
   const value = {
     session,
     loading,
