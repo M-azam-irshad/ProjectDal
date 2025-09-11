@@ -1,8 +1,224 @@
-import React, { useState } from 'react';
-import { Upload, FileText, Users, Target, Tag, Image, Github, ExternalLink, X, Plus } from 'lucide-react';
+import React, { useState, createContext, useContext } from 'react';
+import { Upload, FileText, Users, Target, Tag, Image, Github, ExternalLink, X, Plus, CheckCircle, Eye } from 'lucide-react';
 
-export default function ProjectUploader() {
-  const [formData, setFormData] = useState({
+// Create Context for Projects Database
+const ProjectsContext = createContext();
+
+// Projects Provider Component
+export function ProjectsProvider({ children }) {
+  const [projects, setProjects] = useState([]);
+
+  
+  
+  const addProject = (projectData) => {
+    const newProject = {
+      id: Date.now(), // Simple ID generation
+      ...projectData,
+      submittedAt: new Date().toISOString(),
+    };
+    setProjects(prev => [...prev, newProject]);
+    return newProject.id;
+  };
+  
+  const getProject = (id) => {
+    return projects.find(project => project.id === parseInt(id));
+  };
+  
+  return (
+    <ProjectsContext.Provider value={{ projects, addProject, getProject }}>
+      {children}
+    </ProjectsContext.Provider>
+  );
+}
+
+// Hook to use Projects Context
+const useProjects = () => {
+  const context = useContext(ProjectsContext);
+  if (!context) {
+    throw new Error('useProjects must be used within ProjectsProvider');
+  }
+  return context;
+};
+
+// Project Preview Component
+function ProjectPreview({ project, onClose }) {
+  if (!project) return null;
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-gradient-to-br from-indigo-900 via-blue-800 to-violet-900 rounded-3xl p-8 max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20">
+        <div className="flex justify-between items-start mb-6">
+          <h2 className="text-3xl font-bold text-white">{project.title}</h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-white/70 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div className="space-y-6 text-white">
+          <div>
+            <h3 className="text-xl font-semibold mb-2 text-blue-200">Description</h3>
+            <p className="text-blue-100">{project.description}</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-2 text-blue-200">Category</h3>
+              <span className="px-3 py-1 bg-blue-500/30 rounded-full text-sm">{project.category}</span>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-2 text-blue-200">Target Audience</h3>
+              <p className="text-blue-100">{project.targetAudience}</p>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-blue-200">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag, index) => (
+                <span key={index} className="px-3 py-1 bg-violet-500/30 rounded-full text-sm border border-white/20">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          {project.features.filter(f => f.trim()).length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-3 text-blue-200">Key Features</h3>
+              <ul className="list-disc list-inside space-y-1 text-blue-100">
+                {project.features.filter(f => f.trim()).map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
+          {project.techStack.filter(t => t.trim()).length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-3 text-blue-200">Technology Stack</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.techStack.filter(t => t.trim()).map((tech, index) => (
+                  <span key={index} className="px-3 py-1 bg-indigo-500/30 rounded-full text-sm border border-white/20">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {project.liveDemo && (
+              <a
+                href={project.liveDemo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-200 rounded-xl hover:bg-green-500/30 transition-all border border-green-400/20"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Live Demo
+              </a>
+            )}
+            
+            {project.githubRepo && (
+              <a
+                href={project.githubRepo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-500/20 text-gray-200 rounded-xl hover:bg-gray-500/30 transition-all border border-gray-400/20"
+              >
+                <Github className="w-4 h-4" />
+                GitHub Repository
+              </a>
+            )}
+          </div>
+          
+          <div className="text-xs text-blue-300 pt-4 border-t border-white/20">
+            Submitted: {new Date(project.submittedAt).toLocaleDateString()} at {new Date(project.submittedAt).toLocaleTimeString()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// All Projects List Component
+function AllProjectsList() {
+  const { projects } = useProjects();
+  const [selectedProject, setSelectedProject] = useState(null);
+  
+  if (projects.length === 0) {
+    return null;
+  }
+  
+  return (
+    <>
+      <div className="mt-12 backdrop-blur-lg bg-white/10 rounded-3xl p-8 shadow-2xl border border-white/20">
+        <h2 className="text-2xl font-bold text-white mb-6">All Submitted Projects ({projects.length})</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <div key={project.id} className="bg-white/5 rounded-2xl p-6 border border-white/20 hover:bg-white/10 transition-all duration-300">
+              <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">{project.title}</h3>
+              <p className="text-blue-200 text-sm mb-3 line-clamp-3">{project.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-1 bg-blue-500/30 rounded-full text-xs text-blue-200">{project.category}</span>
+                <button
+                  onClick={() => setSelectedProject(project)}
+                  className="flex items-center gap-1 px-3 py-1 bg-violet-500/20 text-violet-200 rounded-lg hover:bg-violet-500/30 transition-all text-sm"
+                >
+                  <Eye className="w-3 h-3" />
+                  View
+                </button>
+              </div>
+              <div className="mt-3 text-xs text-blue-300">
+                {new Date(project.submittedAt).toLocaleDateString()}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {selectedProject && (
+        <ProjectPreview 
+          project={selectedProject} 
+          onClose={() => setSelectedProject(null)} 
+        />
+      )}
+    </>
+  );
+}
+
+// Success Message Component
+function SuccessMessage({ show, onClose, projectId }) {
+  if (!show) return null;
+  
+  return (
+    <div className="fixed top-4 right-4 z-50 bg-green-500/20 border border-green-400/30 rounded-2xl p-6 backdrop-blur-sm shadow-2xl">
+      <div className="flex items-center gap-3">
+        <CheckCircle className="w-8 h-8 text-green-400" />
+        <div>
+          <h3 className="text-green-100 font-semibold">Project Uploaded Successfully!</h3>
+          <p className="text-green-200 text-sm">Project ID: {projectId}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-green-300 hover:text-green-100 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Main Project Uploader Component
+function ProjectUploader() {
+  const { addProject } = useProjects();
+  
+  const initialFormData = {
     title: '',
     description: '',
     category: '',
@@ -15,10 +231,13 @@ export default function ProjectUploader() {
     documentation: null,
     images: [],
     projectFile: null
-  });
-
+  };
+  
+  const [formData, setFormData] = useState(initialFormData);
   const [currentTag, setCurrentTag] = useState('');
   const [dragOver, setDragOver] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [lastProjectId, setLastProjectId] = useState(null);
 
   const categories = [
     'Web Development', 'Mobile App', 'Machine Learning', 'Data Science', 
@@ -107,9 +326,16 @@ export default function ProjectUploader() {
       return;
     }
     
-    console.log('Form submitted:', formData);
-    // Handle form submission here
-    alert('Project uploaded successfully!');
+    // Add project to database
+    const projectId = addProject(formData);
+    
+    // Reset form and show success
+    setFormData(initialFormData);
+    setLastProjectId(projectId);
+    setShowSuccess(true);
+    
+    // Auto-hide success message after 5 seconds
+    setTimeout(() => setShowSuccess(false), 5000);
   };
 
   return (
@@ -422,7 +648,26 @@ export default function ProjectUploader() {
             </p>
           </div>
         </div>
+
+        {/* All Projects List */}
+        <AllProjectsList />
       </div>
+
+      {/* Success Message */}
+      <SuccessMessage 
+        show={showSuccess} 
+        onClose={() => setShowSuccess(false)}
+        projectId={lastProjectId}
+      />
     </div>
+  );
+}
+
+// Main App Component with Provider
+export default function App() {
+  return (
+    <ProjectsProvider>
+      <ProjectUploader />
+    </ProjectsProvider>
   );
 }
