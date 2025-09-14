@@ -7,7 +7,7 @@ const ProjectsContext = createContext();
 // Projects Provider Component
 export function ProjectsProvider({ children }) {
   const [projects, setProjects] = useState([]);
-
+  
   
   
   const addProject = (projectData) => {
@@ -217,7 +217,7 @@ function SuccessMessage({ show, onClose, projectId }) {
 // Main Project Uploader Component
 function ProjectUploader() {
   const { addProject } = useProjects();
-  
+  const [projectSubmitted, setProjectSubmitted] = useState(false);
   const initialFormData = {
     title: '',
     description: '',
@@ -333,12 +333,14 @@ function ProjectUploader() {
     setFormData(initialFormData);
     setLastProjectId(projectId);
     setShowSuccess(true);
-    
+    setProjectSubmitted(true);
     // Auto-hide success message after 5 seconds
     setTimeout(() => setShowSuccess(false), 5000);
   };
 
   return (
+    <>
+      {projectSubmitted ? <><SuccessMessage /> <AllProjectsList /></> : 
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-800 to-violet-900 p-3 sm:p-4 md:p-6">
       {/* Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -650,7 +652,7 @@ function ProjectUploader() {
         </div>
 
         {/* All Projects List */}
-        <AllProjectsList />
+        
       </div>
 
       {/* Success Message */}
@@ -660,6 +662,8 @@ function ProjectUploader() {
         projectId={lastProjectId}
       />
     </div>
+}
+  </>
   );
 }
 
