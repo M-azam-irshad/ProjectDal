@@ -2,6 +2,7 @@ import { Suspense, useEffect, useState, lazy } from "react";
 import { AuthProvider } from "../Auth/AuthProvider.jsx";
 import {useAuth} from "../Auth/AuthProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import EngineeringProjectForm from "../components/NewProjectUploader.jsx";
 import {
   BrowserRouter,
   Routes,
@@ -27,7 +28,6 @@ const AllProjectCards = lazy(() =>
 );
 const Footer = lazy(() => import("../components/Footer.jsx"));
 const About = lazy(() => import("../components/About.jsx"));
-const ProjectUploader = lazy(() => import("../components/ProjectUploader.jsx"));
 import cardList from "../components/cardList.jsx";
 
 
@@ -37,6 +37,8 @@ import cardList from "../components/cardList.jsx";
 // Enhanced Loading Component
 const EnhancedLoadingFallback = () => {
   return (
+    <>
+
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
@@ -156,7 +158,7 @@ const EnhancedLoadingFallback = () => {
         }
       `}</style>
     </div>
-  );
+  </>);
 };
 
 // Layout component that includes navbar
@@ -185,7 +187,7 @@ function Layout() {
       <Navbar />
       <main>
         {uploaderState ? (
-          <ProjectUploader setUploaderState={setUploaderState} />
+          <EngineeringProjectForm setUploaderState={setUploaderState} />
         ) : (
           <Outlet context={{ setUploaderState }} />
         )}
@@ -226,6 +228,7 @@ function App() {
 
   // User is authenticated, show main app
   return (
+    <>
     <AuthProvider>
     <BrowserRouter>
       <Routes>
@@ -243,11 +246,13 @@ function App() {
             path="/about"
             element={<About prop={<EnhancedLoadingFallback />} />}
           />
-        <Route path="/projectUploader" element={<ProjectUploader />} />
+        <Route path="/projectUploader" element={<EngineeringProjectForm />} />
         </Route>
       </Routes>
     </BrowserRouter>
     </AuthProvider>
+
+    </>
     
   );
 }
