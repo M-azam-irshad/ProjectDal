@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Upload,
   FileText,
@@ -7,11 +8,16 @@ import {
   AlertCircle,
   CheckCircle,
   LogIn,
+  CircleDollarSign,
+  ImageUp,
+  Files,
+  Github,
 } from "lucide-react";
 
 import { supabase } from "../Auth/supabaseClient";
 
 const EngineeringProjectForm = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -19,7 +25,13 @@ const EngineeringProjectForm = () => {
     projectDescription: "",
     uploaderName: "",
     projectCategory: "",
+    tags: "",
+    price: "free",
+    images: null,
+    files: null,
+    githubRepo: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [errors, setErrors] = useState({});
@@ -40,7 +52,6 @@ const EngineeringProjectForm = () => {
 
     checkUser();
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -77,12 +88,14 @@ const EngineeringProjectForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    // Project Title
     if (!formData.projectTitle.trim()) {
       newErrors.projectTitle = "Project title is required";
     } else if (formData.projectTitle.trim().length < 3) {
       newErrors.projectTitle = "Project title must be at least 3 characters";
     }
 
+    // Project Description
     if (!formData.projectDescription.trim()) {
       newErrors.projectDescription = "Project description is required";
     } else if (formData.projectDescription.trim().length < 20) {
@@ -90,14 +103,46 @@ const EngineeringProjectForm = () => {
         "Project description must be at least 20 characters";
     }
 
+    // Uploader Name
     if (!formData.uploaderName.trim()) {
       newErrors.uploaderName = "Your name is required";
     } else if (formData.uploaderName.trim().length < 2) {
       newErrors.uploaderName = "Name must be at least 2 characters";
     }
 
+    // Project Category
     if (!formData.projectCategory) {
       newErrors.projectCategory = "Please select a project category";
+    }
+
+    // Tags
+    if (!formData.tags.trim()) {
+      newErrors.tags = "Please add at least one tag";
+    }
+
+    // Images (required)
+    if (!formData.images || formData.images.length === 0) {
+      newErrors.images = "Please upload at least one image";
+    }
+
+    // Files (required, must be ZIP)
+    if (!formData.files || formData.files.length === 0) {
+      newErrors.files = "Please upload a ZIP file";
+    } else {
+      const zipRegex = /\.zip$/i;
+      const isValidZip = formData.files[0] && zipRegex.test(formData.files[0].name);
+      if (!isValidZip) {
+        newErrors.files = "Only ZIP files are allowed";
+      }
+    }
+
+    // GitHub Repo (optional)
+    if (formData.githubRepo && formData.githubRepo.trim() !== "") {
+      try {
+        new URL(formData.githubRepo);
+      } catch {
+        newErrors.githubRepo = "Please enter a valid URL";
+      }
     }
 
     setErrors(newErrors);
@@ -111,7 +156,6 @@ const EngineeringProjectForm = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -120,10 +164,43 @@ const EngineeringProjectForm = () => {
     }
   };
 
+  // NEW: Handle file input changes
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const uploadFileToStorage = async (file, bucketName) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(fileName, file);
+
+    if (error) throw error;
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if user is authenticated
     if (!user) {
       handleSignIn();
       return;
@@ -137,7 +214,22 @@ const EngineeringProjectForm = () => {
     setSubmitStatus(null);
 
     try {
-      // Insert into Supabase table 'engineering_projects'
+      // Upload images to storage
+      const imageUrls = [];
+      if (formData.images) {
+        for (let i = 0; i < formData.images.length; i++) {
+          const imageUrl = await uploadFileToStorage(formData.images[i], 'project-images');
+          imageUrls.push(imageUrl);
+        }
+      }
+
+      // Upload project file to storage
+      let fileUrl = null;
+      if (formData.files && formData.files[0]) {
+        fileUrl = await uploadFileToStorage(formData.files[0], 'project-files');
+      }
+
+      // Insert into Supabase table
       const { data, error } = await supabase
         .from("engineering_projects")
         .insert([
@@ -146,39 +238,52 @@ const EngineeringProjectForm = () => {
             description: formData.projectDescription.trim(),
             uploader_name: formData.uploaderName.trim(),
             category: formData.projectCategory,
-            user_id: user.id, // Add user ID to track who uploaded
-            user_email: user.email, // Optional: store user email
+            tags: formData.tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter((tag) => tag.length > 0),
+            price: "free",
+            images: imageUrls,
+            files: fileUrl ? [fileUrl] : [],
+            github_repo: formData.githubRepo.trim() || null,
+            user_id: user.id,
+            user_email: user.email,
+            created_at: new Date().toISOString(),
           },
         ])
         .select();
 
-      console.log("Supabase response:", { data, error }); // Debug log
-
       if (error) {
-        console.error("Supabase error details:", error);
+        console.error("Supabase error:", error);
         throw error;
       }
 
       setSubmitStatus("success");
+      
+      // Reset form
       setFormData({
         projectTitle: "",
         projectDescription: "",
         uploaderName: "",
         projectCategory: "",
+        tags: "",
+        price: "free",
+        images: null,
+        files: null,
+        githubRepo: "",
       });
 
-      console.log("Project uploaded successfully:", data[0]);
+      // Navigate after successful upload
+      setTimeout(() => navigate("/allprojects"), 2000);
+
     } catch (error) {
       console.error("Error uploading project:", error);
-      console.error("Error message:", error.message);
-      console.error("Error details:", error.details);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Show loading spinner while checking authentication
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -190,7 +295,6 @@ const EngineeringProjectForm = () => {
     );
   }
 
-  // Show sign in prompt if user is not authenticated
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -217,7 +321,7 @@ const EngineeringProjectForm = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg sm:mt-10 mt-5 ml-5 mr-5 sm:ml-auto sm:mr-auto">
       <div className="flex items-center gap-3 mb-6">
         <Upload className="w-8 h-8 text-blue-600" />
         <div>
@@ -232,7 +336,7 @@ const EngineeringProjectForm = () => {
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
           <CheckCircle className="w-5 h-5 text-green-600" />
           <span className="text-green-800 font-medium">
-            Project uploaded successfully!
+            Project uploaded successfully! Redirecting...
           </span>
         </div>
       )}
@@ -299,9 +403,6 @@ const EngineeringProjectForm = () => {
               {errors.projectDescription}
             </p>
           )}
-          <p className="mt-1 text-xs text-gray-500">
-            {formData.projectDescription.length}/500 characters
-          </p>
         </div>
 
         {/* Uploader Name */}
@@ -363,6 +464,110 @@ const EngineeringProjectForm = () => {
           )}
         </div>
 
+        {/* Tags */}
+        <div>
+          <label
+            htmlFor="tags"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <Tag className="w-4 h-4" />
+            Tags *
+          </label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            value={formData.tags}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+              errors.tags ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="e.g. IoT, Robotics, AI"
+            disabled={isSubmitting}
+          />
+          {errors.tags && (
+            <p className="mt-1 text-sm text-red-600">{errors.tags}</p>
+          )}
+        </div>
+
+        {/* Images Upload */}
+        <div>
+          <label
+            htmlFor="images"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <ImageUp className="w-4 h-4" />
+            Project Thumbnail *
+          </label>
+          <input
+            type="file"
+            id="images"
+            name="images"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            className={`block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${
+              errors.images ? "border-red-500" : ""
+            }`}
+            disabled={isSubmitting}
+          />
+          {errors.images && (
+            <p className="mt-1 text-sm text-red-600">{errors.images}</p>
+          )}
+          <p className="mt-1 text-xs text-yellow-500">
+           Image size can only be up to 2 MB.
+          </p>
+        </div>
+
+        {/* Files Upload (ZIP only) */}
+        <div>
+          <label
+            htmlFor="files"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <Files className="w-4 h-4" />
+            Project Files (ZIP) *
+          </label>
+          <input
+            type="file"
+            id="files"
+            name="files"
+            accept=".zip"
+            onChange={handleFileChange}
+            className={`block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${
+              errors.files ? "border-red-500" : ""
+            }`}
+            disabled={isSubmitting}
+          />
+          {errors.files && (
+            <p className="mt-1 text-sm text-red-600">{errors.files}</p>
+          )}
+          <p className="mt-1 text-xs text-yellow-500">
+            Only ZIP files upto 10 MB are allowed (e.g. source code, documentation).
+          </p>
+        </div>
+
+        {/* GitHub Repo */}
+        <div>
+          <label
+            htmlFor="githubRepo"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <Github className="w-4 h-4" />
+            GitHub Repository (optional)
+          </label>
+          <input
+            type="url"
+            id="githubRepo"
+            name="githubRepo"
+            value={formData.githubRepo}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors border-gray-300"
+            placeholder="https://github.com/username/repo"
+            disabled={isSubmitting}
+          />
+        </div>
+
         {/* Submit Button */}
         <button
           type="submit"
@@ -382,10 +587,6 @@ const EngineeringProjectForm = () => {
           )}
         </button>
       </form>
-
-      <div className="mt-6 text-xs text-gray-500 text-center">
-        * Required fields
-      </div>
     </div>
   );
 };
