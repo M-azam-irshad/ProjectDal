@@ -34,6 +34,7 @@ function Navbar() {
     { name: "Home", path: "/" },
     { name: "Projects", path: "/allprojects" },
     { name: "About", path: "/about" },
+    {name: "My Projects", path:"/myprojects"}
   ];
 
   // Add safety check for openAuthModal
@@ -108,9 +109,7 @@ function Navbar() {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-sm text-gray-600">
-                  Hello, {user?.email}
-                </span>
+          
                 <button
                   onClick={signOut}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
@@ -138,8 +137,8 @@ function Navbar() {
                 </button>
               </div>
             )}
-            {/* Fixed Get Started Button - Show only when not authenticated or not started yet */}
-            {(!isAuthenticated || !getStarted) && (
+            
+          
               <button
                 onClick={handleGetStartedClick}
                 className={`
@@ -156,7 +155,7 @@ function Navbar() {
               >
                 Get started
               </button>
-            )}
+            
           </div>
         </div>
       </div>

@@ -1,7 +1,5 @@
 import { Suspense, useEffect, useState, lazy } from "react";
 import { AuthProvider } from "../Auth/AuthProvider.jsx";
-import {useAuth} from "../Auth/AuthProvider.jsx";
-import { useNavigate } from "react-router-dom";
 import EngineeringProjectForm from "../components/NewProjectUploader.jsx";
 import {
   BrowserRouter,
@@ -12,7 +10,7 @@ import {
 } from "react-router-dom";
 import Lenis from "@studio-freight/lenis";
 import Navbar from "../components/sub-components/Navbar.jsx"; // Your navbar component
-
+import Preview from "../components/Preview.jsx";
 
 // Lazy load components
 const ProjectDalHomepage = lazy(() => import("../components/HomePage.jsx"));
@@ -29,6 +27,7 @@ const AllProjectCards = lazy(() =>
 const Footer = lazy(() => import("../components/Footer.jsx"));
 const About = lazy(() => import("../components/About.jsx"));
 import cardList from "../components/cardList.jsx";
+import MyProjects from "../components/MyProjects.jsx"
 
 
 // Custom Authentication Component
@@ -247,6 +246,8 @@ function App() {
             element={<About prop={<EnhancedLoadingFallback />} />}
           />
         <Route path="/projectUploader" element={<EngineeringProjectForm />} />
+        <Route path="/myprojects" element={<MyProjects/>} />
+        <Route path="/preview" element={<Preview />} />
         </Route>
       </Routes>
     </BrowserRouter>

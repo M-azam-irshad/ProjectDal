@@ -12,6 +12,9 @@ import {
   ImageUp,
   Files,
   Github,
+  HardDriveUpload
+
+  
 } from "lucide-react";
 
 import { supabase } from "../Auth/supabaseClient";
@@ -22,6 +25,7 @@ const EngineeringProjectForm = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     projectTitle: "",
+    subtitle: "",
     projectDescription: "",
     uploaderName: "",
     projectCategory: "",
@@ -29,6 +33,7 @@ const EngineeringProjectForm = () => {
     price: "free",
     images: null,
     files: null,
+    drive:"",
     githubRepo: "",
   });
 
@@ -95,6 +100,13 @@ const EngineeringProjectForm = () => {
       newErrors.projectTitle = "Project title must be at least 3 characters";
     }
 
+    // Project Subtitle
+    if(!formData.subtitle.trim()){
+      newErrors.subtitle = "Subtitle is required";
+    }
+    else if(formData.subtitle.trim().length < 5){
+      newErrors.subtitle = "Please have atleast five words";
+    }
     // Project Description
     if (!formData.projectDescription.trim()) {
       newErrors.projectDescription = "Project description is required";
@@ -121,18 +133,25 @@ const EngineeringProjectForm = () => {
     }
 
     // Images (required)
+    const imageSize = formData.images[0].size;
     if (!formData.images || formData.images.length === 0) {
       newErrors.images = "Please upload at least one image";
     }
+    else if (imageSize > 2*1024*1024) {
+      newErrors.images = "Images greater than 2MB aren't allowed"
+    }
+
 
     // Files (required, must be ZIP)
-    if (!formData.files || formData.files.length === 0) {
-      newErrors.files = "Please upload a ZIP file";
-    } else {
+    if (formData.files) {
+      const fileSize = formData.files[0].size;
       const zipRegex = /\.zip$/i;
       const isValidZip = formData.files[0] && zipRegex.test(formData.files[0].name);
       if (!isValidZip) {
         newErrors.files = "Only ZIP files are allowed";
+      }
+      else if(fileSize > 10*1024*1024){
+        newErrors.files = "Files greater than 10MB aren't allowed"
       }
     }
 
@@ -235,6 +254,7 @@ const EngineeringProjectForm = () => {
         .insert([
           {
             title: formData.projectTitle.trim(),
+            subtitle: formData.subtitle.trim(),
             description: formData.projectDescription.trim(),
             uploader_name: formData.uploaderName.trim(),
             category: formData.projectCategory,
@@ -246,6 +266,7 @@ const EngineeringProjectForm = () => {
             images: imageUrls,
             files: fileUrl ? [fileUrl] : [],
             github_repo: formData.githubRepo.trim() || null,
+            drive: formData.drive.trim() || null,
             user_id: user.id,
             user_email: user.email,
             created_at: new Date().toISOString(),
@@ -263,6 +284,7 @@ const EngineeringProjectForm = () => {
       // Reset form
       setFormData({
         projectTitle: "",
+        subtitle: "",
         projectDescription: "",
         uploaderName: "",
         projectCategory: "",
@@ -270,11 +292,12 @@ const EngineeringProjectForm = () => {
         price: "free",
         images: null,
         files: null,
+        drive:"",
         githubRepo: "",
       });
 
       // Navigate after successful upload
-      setTimeout(() => navigate("/allprojects"), 2000);
+      setTimeout(() => navigate("/preview"), 2000);
 
     } catch (error) {
       console.error("Error uploading project:", error);
@@ -362,6 +385,7 @@ const EngineeringProjectForm = () => {
           </label>
           <input
             type="text"
+            autocomplete = "off"
             id="projectTitle"
             name="projectTitle"
             value={formData.projectTitle}
@@ -374,6 +398,32 @@ const EngineeringProjectForm = () => {
           />
           {errors.projectTitle && (
             <p className="mt-1 text-sm text-red-600">{errors.projectTitle}</p>
+          )}
+        </div>
+        {/* Project Subtitle */}
+        <div>
+          <label
+            htmlFor="subtitle"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <FileText className="w-4 h-4" />
+            Subtitle *
+          </label>
+          <input
+            type="text"
+            autocomplete = "off"
+            id="subtitle"
+            name="subtitle"
+            value={formData.subtitle}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+              errors.subtitle ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your project subtitle"
+            disabled={isSubmitting}
+          />
+          {errors.subtitle && (
+            <p className="mt-1 text-sm text-red-600">{errors.subtitle}</p>
           )}
         </div>
 
@@ -416,6 +466,7 @@ const EngineeringProjectForm = () => {
           </label>
           <input
             type="text"
+            autocomplete = "off"
             id="uploaderName"
             name="uploaderName"
             value={formData.uploaderName}
@@ -475,6 +526,7 @@ const EngineeringProjectForm = () => {
           </label>
           <input
             type="text"
+            autocomplete = "off"
             id="tags"
             name="tags"
             value={formData.tags}
@@ -501,6 +553,7 @@ const EngineeringProjectForm = () => {
           </label>
           <input
             type="file"
+            autocomplete = "off"
             id="images"
             name="images"
             accept="image/*"
@@ -525,11 +578,12 @@ const EngineeringProjectForm = () => {
             htmlFor="files"
             className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
           >
-            <Files className="w-4 h-4" />
-            Project Files (ZIP) *
+            <Upload className="w-4 h-4" />
+            Project Files (ZIP) 
           </label>
           <input
             type="file"
+            autocomplete = "off"
             id="files"
             name="files"
             accept=".zip"
@@ -546,6 +600,27 @@ const EngineeringProjectForm = () => {
             Only ZIP files upto 10 MB are allowed (e.g. source code, documentation).
           </p>
         </div>
+        {/* Google Drive Link */}
+        <div>
+          <label
+            htmlFor="drive"
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          >
+            <HardDriveUpload className="w-4 h-4" />
+            Google Drive (Use Drive link for more space)
+          </label>
+          <input
+            type="url"
+            autocomplete = "off"
+            id="drive"
+            name="drive"
+            value={formData.drive}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors border-gray-300"
+            placeholder="https://drive.google.com/file/d/DRIVE_FILE_ID/view?usp=sharing"
+            disabled={isSubmitting}
+          />
+        </div>
 
         {/* GitHub Repo */}
         <div>
@@ -558,6 +633,7 @@ const EngineeringProjectForm = () => {
           </label>
           <input
             type="url"
+            autocomplete = "off"
             id="githubRepo"
             name="githubRepo"
             value={formData.githubRepo}
