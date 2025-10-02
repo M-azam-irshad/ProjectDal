@@ -65,26 +65,17 @@ function Navbar() {
   };
 
   // Logo Component (reused in both layouts)
-  const Logo = () => (
+  const Logo = (size) => (
     <div className="flex items-center space-x-3 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
-      <div className="relative">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-700 rounded-xl flex items-center justify-center rotate-3 shadow-lg">
-          <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-          <Sparkles className="w-2 h-2 text-white" />
-        </div>
-      </div>
-      <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-900 bg-clip-text text-transparent">
+      <img src={`MainLogoDesktop.png`} alt="" />
+      <h1 className="text-2xl font-bold bg-white bg-clip-text text-transparent ">
         ProjectLaga
       </h1>
     </div>
   );
 
   return (
-    <nav className="relative z-50 px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-500 backdrop-blur-md">
+    <nav className="relative z-50  bg-gradient-to-r from-blue-500 to-blue-500 backdrop-blur-md">
       {/* Desktop Layout */}
       <div className="hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
