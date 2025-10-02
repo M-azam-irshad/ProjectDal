@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../Auth/supabaseClient";
+import ProjectCard from "./DisplayCard.jsx"
 // Dummy Supabase client with auth - replace with your actual Supabase client
 
 export default function MyProjects() {
@@ -104,11 +105,9 @@ useEffect(() => {
             <p className="text-lg">No data found for your account.</p>
           </div>
         ) : (
-          data.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
-              <p className="text-gray-600">{item.subtitle}</p>
-            </div>
+          data.map((item) => (<>
+            <ProjectCard title={item.title} subtitle={item.subtitle} image={item.images} date={item.created_at} author={item.uploader_name}/>
+            </>
           ))
         )}
       </div>

@@ -636,46 +636,6 @@ export default function EngineeringProjectForm() {
                 </div>
 
                 {/* Files Upload */}
-                <div className="group">
-                  <label
-                    htmlFor="files"
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3"
-                  >
-                    <Upload className="w-4 h-4 text-indigo-600" />
-                    Project Files (ZIP)
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="file"
-                      autoComplete="off"
-                      id="files"
-                      name="files"
-                      accept=".zip"
-                      onChange={handleFileChange}
-                      className={`block w-full text-slate-600 bg-white/50 backdrop-blur-sm border-2 rounded-2xl p-4 font-medium transition-all duration-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white file:font-semibold hover:file:from-indigo-700 hover:file:to-purple-700 file:shadow-lg hover:file:shadow-xl file:transition-all file:duration-300 ${
-                        errors.files 
-                          ? "border-red-300 bg-red-50/30" 
-                          : "border-white/40 hover:border-white/60"
-                      }`}
-                      disabled={isSubmitting}
-                    />
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </div>
-                  {errors.files && (
-                    <p className="mt-2 text-sm text-red-600 font-medium">{errors.files}</p>
-                  )}
-                  <p className="mt-2 text-xs text-amber-600 font-medium bg-amber-50/50 backdrop-blur-sm px-3 py-2 rounded-xl border border-amber-200/50">
-                    Only ZIP files up to 10 MB are allowed (e.g. source code, documentation).
-                  </p>
-                </div>
-              </div>
-
-              {/* External Links Section */}
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-slate-800 border-b border-white/20 pb-2">External Links</h3>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Google Drive Link */}
                   <div className="group">
                     <label
                       htmlFor="drive"
@@ -693,13 +653,22 @@ export default function EngineeringProjectForm() {
                         value={formData.drive}
                         onChange={handleInputChange}
                         className="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-0 transition-all duration-300 placeholder:text-slate-400 font-medium shadow-inner border-white/40 focus:border-indigo-400 hover:border-white/60"
-                        placeholder="https://drive.google.com/file/d/..."
+                        placeholder="Drop the link of all your files here"
                         disabled={isSubmitting}
                       />
                       <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
-                    <p className="mt-2 text-xs text-slate-500 font-medium">Use Drive link for files larger than 10MB</p>
+                  
                   </div>
+              </div>
+
+              {/* External Links Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-slate-800 border-b border-white/20 pb-2">External Links</h3>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Google Drive Link */}
+
 
                   {/* GitHub Repo */}
                   <div className="group">
@@ -740,7 +709,7 @@ export default function EngineeringProjectForm() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-5 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl disabled:hover:scale-100 disabled:hover:shadow-xl"
+                  className="group relative cursor-pointer w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-5 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl disabled:hover:scale-100 disabled:hover:shadow-xl"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity disabled:opacity-20"></div>
                   {isSubmitting ? (
@@ -749,8 +718,8 @@ export default function EngineeringProjectForm() {
                       Uploading Project...
                     </span>
                   ) : (
-                    <span className="relative flex items-center justify-center gap-3">
-                      <Upload className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <span className="relative flex items-center justify-center gap-3 ">
+                      <Upload className="w-5 h-5 group-hover:rotate-12 transition-transform " />
                       Upload Project
                     </span>
                   )}
